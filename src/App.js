@@ -3,10 +3,11 @@ import { ApolloProvider, Query } from "react-apollo"
 import { client } from './client'
 import { SEARCH_REPOSITORIES } from "./graphql";
 
+const PER_PAGE = 5
 const VARIABLES = {
   after: null,
 	before: null,
-	first: 5,
+	first: PER_PAGE,
 	last: null,
 	query: "フロントエンドエンジニア"
 }
@@ -14,7 +15,6 @@ const VARIABLES = {
 export const App = () => {
   const [variables, setVariables] = useState(VARIABLES)
   const { after, before, first, last, query } = variables
-  console.log({query})
 
   return (
     <ApolloProvider client={client}>
@@ -41,14 +41,13 @@ export const App = () => {
             return `Error! ${error.message}`
           }
 
-          console.log({data})
-
           const repositoryUnit = data.search.repositoryCount <= 1 ? 'Repository' : 'Repositories'
           return (
             <Fragment>
               <h2>
                 Github Repositories Search Results - {data.search.repositoryCount} {repositoryUnit}
               </h2>
+
               <ul>
                 {data.search.edges.map(e => {
                   const n = e.node
@@ -59,6 +58,40 @@ export const App = () => {
                   )
                 })}
               </ul>
+
+              {/* 前の5件を表示 */}
+              {data.search.pageInfo.hasPreviousPage && (
+                <button
+                  onClick={() =>
+                    setVariables({
+                      ...variables,
+                      after: null,
+                      before: data.search.pageInfo.startCursor,
+                      first: null,
+                      last: PER_PAGE,
+                    })
+                  }
+                >
+                  Previous
+                </button>
+              )}
+
+              {/* 次の5件を表示 */}
+              {data.search.pageInfo.hasNextPage && (
+                <button
+                  onClick={() =>
+                    setVariables({
+                      ...variables,
+                      after: data.search.pageInfo.endCursor,
+                      before: null,
+                      first: PER_PAGE,
+                      last: null,
+                    })
+                  }
+                >
+                  Next
+                </button>
+              )}
             </Fragment>
           )}}
       </Query>
