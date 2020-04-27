@@ -1,7 +1,8 @@
 import React, { useState, Fragment } from 'react'
 import { ApolloProvider, Query } from "react-apollo"
 import { client } from './client'
-import { SEARCH_REPOSITORIES } from "./graphql";
+import { SEARCH_REPOSITORIES } from "./graphql"
+import { StarButton } from "./StarButton"
 
 const PER_PAGE = 5
 const VARIABLES = {
@@ -50,10 +51,13 @@ export const App = () => {
 
               <ul>
                 {data.search.edges.map(e => {
-                  const n = e.node
+                  const node = e.node
                   return (
-                    <li key={n.id}>
-                      <a href={n.url}>{n.name}</a>
+                    <li key={node.id}>
+                      <a href={node.url}>{node.name}</a>
+                      &nbsp;
+                      &nbsp;
+                      <StarButton node={node} />
                     </li>
                   )
                 })}
