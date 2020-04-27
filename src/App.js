@@ -57,7 +57,10 @@ export const App = () => {
                       <a href={node.url}>{node.name}</a>
                       &nbsp;
                       &nbsp;
-                      <StarButton node={node} />
+                      <StarButton
+                        node={node}
+                        {...{ after, before, first, last, query }}
+                      />
                     </li>
                   )
                 })}
