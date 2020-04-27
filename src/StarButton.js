@@ -12,15 +12,15 @@ export const StarButton = props => {
   return(
     <Mutation
       mutation={viewerHasStarred ? REMOVE_STAR : ADD_STAR}
-      refetchQueries={ mutationResult => {
-        console.log(mutationResult)
-        return [
-            {
-              query: SEARCH_REPOSITORIES,
-              variables: { after, before, first, last, query }
-            }
-        ]
-      }}
+    //   refetchQueries={ mutationResult => {
+    //     console.log(mutationResult)
+    //     return [
+    //         {
+    //           query: SEARCH_REPOSITORIES,
+    //           variables: { after, before, first, last, query }
+    //         }
+    //     ]
+    //   }}
     >
       {addOrRemoveStar =>
         <StarStatus
@@ -28,18 +28,26 @@ export const StarButton = props => {
           starCount={starCount}
           viewerHasStarred={viewerHasStarred}
           id={id}
+          {...{ after, before, first, last, query }}
         />
       }
     </Mutation>
   )
 }
 
-const StarStatus = ({
+const StarStatus = props => {
+  const {
     addOrRemoveStar,
     starCount,
     viewerHasStarred,
-    id
-}) => {
+    id,
+    after,
+    before,
+    first,
+    last,
+    query
+  } = props
+
   return (
     <button
       onClick={
@@ -48,6 +56,26 @@ const StarStatus = ({
             input: {
               starrableId: id
             }
+          },
+          update: (store, {data: {addStar, removeStar}}) => {
+            const { starrable } = addStar || removeStar
+            console.log(starrable)
+
+            const data = store.readQuery({
+              query: SEARCH_REPOSITORIES,
+              variables: { after, before, first, last, query }
+            })
+            const newEdges = data.search.edges.map(e => {
+              if (e.node.id === id) {
+                const totalCount = e.node.stargazers.totalCount
+                const diff = starrable.viewerHasStarred ? 1 : -1
+                const newTotalCount = totalCount + diff
+                e.node.stargazers.totalCount = newTotalCount
+              }
+              return e
+            })
+            data.search.edges = newEdges
+            store.writeQuery({ query: SEARCH_REPOSITORIES, data })
           }
         })
       }
