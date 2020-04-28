@@ -13,7 +13,6 @@ export const StarButton = props => {
     <Mutation
       mutation={viewerHasStarred ? REMOVE_STAR : ADD_STAR}
     //   refetchQueries={ mutationResult => {
-    //     console.log(mutationResult)
     //     return [
     //         {
     //           query: SEARCH_REPOSITORIES,
@@ -59,7 +58,6 @@ const StarStatus = props => {
           },
           update: (store, {data: {addStar, removeStar}}) => {
             const { starrable } = addStar || removeStar
-            console.log(starrable)
 
             const data = store.readQuery({
               query: SEARCH_REPOSITORIES,
