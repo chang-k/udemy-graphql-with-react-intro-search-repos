@@ -16,9 +16,7 @@ const VARIABLES = {
 export const App = () => {
   const [variables, setVariables] = useState(VARIABLES)
   const { after, before, first, last, query } = variables
-  const inputEl = useRef("フロント");
-
-  console.log("inputEl", inputEl)
+  const inputEl = useRef("フロント")
 
   return (
     <ApolloProvider client={client}>
@@ -28,8 +26,7 @@ export const App = () => {
           setVariables({
             ...variables,
             query: inputEl.current.value
-          }),
-          console.log("setVariables", inputEl.current.value)
+          })
         )}
       >
         <input ref={inputEl} defaultValue={inputEl.current} />
