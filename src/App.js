@@ -21,13 +21,13 @@ export const App = () => {
   return (
     <ApolloProvider client={client}>
       <form
-        onSubmit={e => (
+        onSubmit={e => ((
           e.preventDefault(),
           setVariables({
             ...variables,
             query: inputEl.current.value
           })
-        )}
+        ))}
       >
         <input ref={inputEl} defaultValue={inputEl.current} />
         <input type="submit" value="SUBMIT" />
