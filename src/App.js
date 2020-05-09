@@ -13,6 +13,7 @@ const VARIABLES = {
 	query: ""
 }
 
+
 export const App = () => {
   const [variables, setVariables] = useState(VARIABLES)
   const { after, before, first, last, query } = variables
